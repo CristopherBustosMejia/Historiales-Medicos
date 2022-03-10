@@ -14,5 +14,6 @@ namespace Historiales_Medicos
         public string AnioIngresion;
         public string Password;
         public string IdMedico;
+        public string Cedula;
     }
 }

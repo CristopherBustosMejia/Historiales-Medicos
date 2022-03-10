@@ -21,7 +21,10 @@ namespace Historiales_Medicos
         public string TipoSangre;
         public string Diagnostico;
         public string Indicaciones;
-        public string AntecedenteMedico;
+        public string PadecimientoC;
+        public string LesionesR;
+        public string Cirugias;
+        public string Alergias;
 
         public Historial()
         {

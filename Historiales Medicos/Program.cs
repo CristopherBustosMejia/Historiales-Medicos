@@ -85,16 +85,17 @@ namespace Historiales_Medicos
         }
         static void ConsultarRegistro()
         {
+            Console.WriteLine(".-------SALUD PRIMERO------.\n..............Datos del Paciente.............\n");
             int Flag;
             Historial Paciente = new Historial();
             Paciente = ObtenerHistorial();
-            Console.WriteLine(Paciente.NombrePaciente);
-            Console.WriteLine(Paciente.ApellidoP);
-            Console.WriteLine(Paciente.ApellidoM);
-            Console.WriteLine(Paciente.Edad.ToString());
-            Console.WriteLine(Paciente.Sexo);
-            Console.WriteLine(Paciente.IdRegistro);
-            Console.WriteLine(Paciente.FechaRegistro + "\n");
+            Console.WriteLine("Nombre: " + Paciente.NombrePaciente);
+            Console.WriteLine("Apellido Paterno: " + Paciente.ApellidoP);
+            Console.WriteLine("Apellido Materno: " + Paciente.ApellidoM);
+            Console.WriteLine("Edad: " + Paciente.Edad.ToString());
+            Console.WriteLine("Sexo: " + Paciente.Sexo);
+            Console.WriteLine("Id de registro: " + Paciente.IdRegistro);
+            Console.WriteLine("Fecha de registro (dd_mm_aa): " + Paciente.FechaRegistro + "\n");
             Console.WriteLine("Desea ver el historial completo? \n 1. Si \n 2. No");
             Flag = int.Parse(Console.ReadLine());
             while(Flag != 1 && Flag != 2)
@@ -121,6 +122,7 @@ namespace Historiales_Medicos
 
         static void RegistroNuevo(string Fecha,string Hora)
         {
+            Console.WriteLine(".-------SALUD PRIMERO------.\n..............Datos del Paciente.............\n");
             Historial Paciente = new Historial(Fecha,Hora);
             Console.WriteLine("Ingrese el nombre del paciente");
             Paciente.NombrePaciente = Console.ReadLine();
@@ -150,8 +152,12 @@ namespace Historiales_Medicos
             }
             Console.WriteLine("Ingrese el tipo de sangre del paciente (Ejemplo: O positivo)");
             Paciente.TipoSangre = Console.ReadLine();
-            Console.WriteLine("Ingrese los antecedentes medicos");
-            Paciente.AntecedenteMedico = Console.ReadLine();
+            Console.WriteLine("Ingrese los padecimientos congenitos del paciente");
+            Paciente.PadecimientoC = Console.ReadLine();
+            Console.WriteLine("Ingrese las lesiones de gravedad recientes (2 años o menos): ");
+            Paciente.LesionesR = Console.ReadLine();
+            Console.WriteLine("Ingrese las alergias del paciente");
+            Paciente.Alergias = Console.ReadLine();
             Console.WriteLine("Ingrese el diagnostico actual");
             Paciente.Diagnostico = Console.ReadLine();
             Console.WriteLine("Ingrese las indicaciones de tratamiento");
@@ -188,19 +194,22 @@ namespace Historiales_Medicos
         }
         static void RegistarMedico()
         {
+            Console.WriteLine(".-------SALUD PRIMERO------.\n..............Datos del Medico............\n");
             bool Flag = false;
             string Confirmacion;
             Medico Doctor = new Medico();
-            Console.WriteLine("Ingrese el nombre: ");
+            Console.WriteLine("Ingrese el nombre del medico: ");
             Doctor.Nombre = Console.ReadLine();
-            Console.WriteLine("Ingrese el apellido paterno: ");
+            Console.WriteLine("Ingrese el apellido paterno del medico: ");
             Doctor.ApellidoP = Console.ReadLine();
-            Console.WriteLine("Ingrese el apellido materno: ");
+            Console.WriteLine("Ingrese el apellido materno del medico: ");
             Doctor.ApellidoM = Console.ReadLine();  
-            Console.WriteLine("Ingrese el año en que ingreso al hospital: ");
+            Console.WriteLine("Ingrese la cedula profesional del medico: ");
+            Doctor.Cedula = Console.ReadLine();
+            Console.WriteLine("Ingrese el año en que ingreso al hospital (Ejemplo: 1999): ");
             Doctor.AnioIngresion = Console.ReadLine();
             Doctor.IdMedico = GenerarIdMedico(Doctor);
-            Console.WriteLine("Ingrese la contraseña que se guardara \n NOTA: Es muy importante recordar esta contraseña");
+            
             Doctor.Password = Console.ReadLine();
             while(Flag == false)
             {
@@ -218,7 +227,7 @@ namespace Historiales_Medicos
                 }
                 else
                 {
-                    Console.WriteLine("Ingrese la contraseña que se guardara \n NOTA: Es muy importante recordar esta contraseña");
+                    Console.WriteLine("Ingrese la contraseña que se guardara \n NOTA: Es muy importante que la contraseña sea de 6 digitos o mas");
                     Doctor.Password = Console.ReadLine();
                 }
             }
