@@ -23,7 +23,10 @@ namespace Historiales_Medicos
         public string Indicaciones;
         public string AntecedenteMedico;
 
-        
+        public Historial()
+        {
+
+        }
         public Historial(string FechaRegistro,string HoraRegistro)
         {
             this.FechaRegistro = FechaRegistro;

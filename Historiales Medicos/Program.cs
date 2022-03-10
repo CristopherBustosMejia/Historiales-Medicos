@@ -16,20 +16,21 @@ namespace Historiales_Medicos
             //Variables
             bool flag = true;
             string option;
-            List<Historial> ListaHistoriales;
+            List<Medico> ListaMedicos = new List<Medico>();
+            CargarMedicos(ListaMedicos);
             //Instrucciones
             while(flag == true)
             {
                 Console.WriteLine("............................");
                 Console.WriteLine(".-------SALUD PRIMERO------.\n............................\n");
-                Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1.Consultar historial cliníco del paciente \n 2.Registrar nuevo paciente. \n 3.Salir");
+                Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1. Registrar Medico \n 2. Consultar historial cliníco del paciente \n 3. Registrar nuevo paciente. \n 4. Salir");
                 Console.WriteLine("++++++++++++++++++++++++++++++++");
                 option = Console.ReadLine();
-                while (option != "1" && option != "2" && option != "3")
+                while (option != "1" && option != "2" && option != "3" && option != "4")
                 {
                     Console.WriteLine("++++++++++++++++++++++++++++++++");
                     Console.WriteLine("Opcion no valida");
-                    Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1.Consultar historial cliníco del paciente \n 2.Registrar nuevo paciente. \n 3.Salir");
+                    Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1. Registrar Medico \n 2. Consultar historial cliníco del paciente \n 3. Registrar nuevo paciente. \n 4. Salir");
                     Console.WriteLine("++++++++++++++++++++++++++++++++");
                     option = Console.ReadLine();
                 }
@@ -37,15 +38,20 @@ namespace Historiales_Medicos
                 {
                     case "1":
                         {
-                            Console.WriteLine("Trabajo en proceso");
+                            RegistarMedico();
                         }
                         break;
                     case "2":
                         {
-                            RegistroNuevo(GetFecha(),GetHora());
+                            ConsultarRegistro();
                         }
                         break;
                     case "3":
+                        {
+                            RegistroNuevo(GetFecha(),GetHora());
+                        }
+                        break;
+                    case "4":
                         {
                             flag = false;
                         }
@@ -60,11 +66,50 @@ namespace Historiales_Medicos
             }
         }
 
+        static Historial ObtenerHistorial()
+        {
+            string Id;
+            Console.WriteLine("Ingrese la Id del paciente:");
+            Id = Console.ReadLine();
+            Historial Registro = new Historial();
+            FileStream Archivo = new FileStream(@".\Registro"+ Id + ".txt", FileMode.Open, FileAccess.Read);
+            StreamReader Leer = new StreamReader(Archivo);
+            String Texto;
+            while ((Texto = Leer.ReadLine()) != null)
+            {
+                Registro = JsonConvertidor.Json_Objeto<Historial>(Texto);
+            }
+            Archivo.Close();
+            Leer.Close();
+            return Registro;
+        }
         static void ConsultarRegistro()
         {
-
-        }
-
+            int Flag;
+            Historial Paciente = new Historial();
+            Paciente = ObtenerHistorial();
+            Console.WriteLine(Paciente.NombrePaciente);
+            Console.WriteLine(Paciente.ApellidoP);
+            Console.WriteLine(Paciente.ApellidoM);
+            Console.WriteLine(Paciente.Edad.ToString());
+            Console.WriteLine(Paciente.Sexo);
+            Console.WriteLine(Paciente.IdRegistro);
+            Console.WriteLine(Paciente.FechaRegistro + "\n");
+            Console.WriteLine("Desea ver el historial completo? \n 1. Si \n 2. No");
+            Flag = int.Parse(Console.ReadLine());
+            while(Flag != 1 && Flag != 2)
+            {
+                Console.WriteLine("Opcion invalida");
+                Console.WriteLine("Desea ver el historial completo? \n 1. Si \n 2. No");
+                Flag = int.Parse(Console.ReadLine());
+            }
+            if(Flag == 1)
+            {
+                HistorialCompleto(Paciente);
+            }
+            Console.ReadKey();
+            }
+        
         private static string GetFecha()
         {
             return DateTime.Now.ToString("dd_MM_yy");
@@ -95,6 +140,7 @@ namespace Historiales_Medicos
             while (flag != 1 && flag != 2)
             {
                 Console.WriteLine("Opcion no valida");
+                Console.WriteLine("Desea ingresar el numero telefonico del paciente? \n 1. Si \n 2. No");
                 flag = int.Parse(Console.ReadLine());
             }
             if(flag == 1)
@@ -121,11 +167,82 @@ namespace Historiales_Medicos
             StreamWriter Escribir = new StreamWriter(Archivo);
             String json = JsonConvertidor.Objeto_Json(Paciente);
             Escribir.WriteLine(json);
+            Escribir.Close();
         }
         static string GenerarIdRegistro(Historial Paciente)
         {
             string id = Char.ToString(Paciente.ApellidoP.FirstOrDefault()) + Char.ToString(Paciente.ApellidoM.FirstOrDefault()) + Paciente.FechaRegistro;
             return id;
+        }
+        static string GenerarIdMedico(Medico Doctor)
+        {
+            string id = Char.ToString(Doctor.ApellidoP.FirstOrDefault()) + Char.ToString(Doctor.ApellidoM.FirstOrDefault()) + Doctor.AnioIngresion;
+            return id;
+        }
+        static void GuardarMedico(Medico Doctor)
+        {
+            StreamWriter Escribir = new StreamWriter(@".\Medicos.txt", true);
+            String json = JsonConvertidor.Objeto_Json(Doctor);
+            Escribir.WriteLine(json);
+            Escribir.Close();
+        }
+        static void RegistarMedico()
+        {
+            bool Flag = false;
+            string Confirmacion;
+            Medico Doctor = new Medico();
+            Console.WriteLine("Ingrese el nombre: ");
+            Doctor.Nombre = Console.ReadLine();
+            Console.WriteLine("Ingrese el apellido paterno: ");
+            Doctor.ApellidoP = Console.ReadLine();
+            Console.WriteLine("Ingrese el apellido materno: ");
+            Doctor.ApellidoM = Console.ReadLine();  
+            Console.WriteLine("Ingrese el año en que ingreso al hospital: ");
+            Doctor.AnioIngresion = Console.ReadLine();
+            Doctor.IdMedico = GenerarIdMedico(Doctor);
+            Console.WriteLine("Ingrese la contraseña que se guardara \n NOTA: Es muy importante recordar esta contraseña");
+            Doctor.Password = Console.ReadLine();
+            while(Flag == false)
+            {
+                Console.WriteLine("La contraseña que ingreso es: " + Doctor.Password + "\n Desea guardar esta contraseña? \n 1. Si \n 2. No");
+                Confirmacion = Console.ReadLine();
+                while(Confirmacion != "1" && Confirmacion != "2")
+                {
+                    Console.WriteLine("Opcion no valida");
+                    Console.WriteLine("Desea guardar esta contraseña? \n 1. Si \n 2. No");
+                    Confirmacion = Console.ReadLine();
+                }
+                if(Confirmacion == "1")
+                {
+                    Flag = true;
+                }
+                else
+                {
+                    Console.WriteLine("Ingrese la contraseña que se guardara \n NOTA: Es muy importante recordar esta contraseña");
+                    Doctor.Password = Console.ReadLine();
+                }
+            }
+            GuardarMedico(Doctor);
+            Console.WriteLine("Registro creado y guardado con exito con la id: \n" + Doctor.IdMedico + "\n Presione una tecla para continuar");
+            Console.ReadKey();
+        }
+        static void CargarMedicos(List<Medico>ListaMedicos)
+        {
+            Medico Doctor = new Medico();
+            FileStream Archivo =  new FileStream(@".\Medicos.txt", FileMode.Open, FileAccess.Read);
+            StreamReader Leer = new StreamReader(Archivo);
+            String Texto;
+            while ((Texto = Leer.ReadLine()) != null)
+            {
+                Doctor = JsonConvertidor.Json_Objeto<Medico>(Texto);
+                ListaMedicos.Add(Doctor);
+            }
+            Archivo.Close();
+            Leer.Close();
+        }
+        static void HistorialCompleto(Historial Paciente)
+        {
+            Console.WriteLine("Trabajo en proceso");
         }
     }
 }
