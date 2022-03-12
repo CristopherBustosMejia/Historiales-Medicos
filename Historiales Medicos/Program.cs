@@ -72,42 +72,53 @@ namespace Historiales_Medicos
             Console.WriteLine("Ingrese la Id del paciente:");
             Id = Console.ReadLine();
             Historial Registro = new Historial();
-            FileStream Archivo = new FileStream(@".\Registro"+ Id + ".txt", FileMode.Open, FileAccess.Read);
-            StreamReader Leer = new StreamReader(Archivo);
-            String Texto;
-            while ((Texto = Leer.ReadLine()) != null)
+            try
             {
-                Registro = JsonConvertidor.Json_Objeto<Historial>(Texto);
+                FileStream Archivo = new FileStream(@".\Registro" + Id + ".txt", FileMode.Open, FileAccess.Read);
+                StreamReader Leer = new StreamReader(Archivo);
+                String Texto;
+                while ((Texto = Leer.ReadLine()) != null)
+                {
+                    Registro = JsonConvertidor.Json_Objeto<Historial>(Texto);
+                }
+                Archivo.Close();
+                Leer.Close();
+                return Registro;
+            } catch (Exception ex)
+            {
+                Console.WriteLine("No se encontro el archivo");
+                return null;
             }
-            Archivo.Close();
-            Leer.Close();
-            return Registro;
         }
         static void ConsultarRegistro()
         {
-            Console.WriteLine(".-------SALUD PRIMERO------.\n..............Datos del Paciente.............\n");
+            Console.WriteLine(".-------SALUD PRIMERO------.\n..........Datos del Paciente..........\n");
             int Flag;
             Historial Paciente = new Historial();
             Paciente = ObtenerHistorial();
-            Console.WriteLine("Nombre: " + Paciente.NombrePaciente);
-            Console.WriteLine("Apellido Paterno: " + Paciente.ApellidoP);
-            Console.WriteLine("Apellido Materno: " + Paciente.ApellidoM);
-            Console.WriteLine("Edad: " + Paciente.Edad.ToString());
-            Console.WriteLine("Sexo: " + Paciente.Sexo);
-            Console.WriteLine("Id de registro: " + Paciente.IdRegistro);
-            Console.WriteLine("Fecha de registro (dd_mm_aa): " + Paciente.FechaRegistro + "\n");
-            Console.WriteLine("Desea ver el historial completo? \n 1. Si \n 2. No");
-            Flag = int.Parse(Console.ReadLine());
-            while(Flag != 1 && Flag != 2)
+            if (Paciente != null)
             {
-                Console.WriteLine("Opcion invalida");
+                Console.WriteLine("Nombre: " + Paciente.NombrePaciente);
+                Console.WriteLine("Apellido Paterno: " + Paciente.ApellidoP);
+                Console.WriteLine("Apellido Materno: " + Paciente.ApellidoM);
+                Console.WriteLine("Edad: " + Paciente.Edad.ToString());
+                Console.WriteLine("Sexo: " + Paciente.Sexo);
+                Console.WriteLine("Id de registro: " + Paciente.IdRegistro);
+                Console.WriteLine("Fecha de registro (dd_mm_aa): " + Paciente.FechaRegistro + "\n");
                 Console.WriteLine("Desea ver el historial completo? \n 1. Si \n 2. No");
                 Flag = int.Parse(Console.ReadLine());
+                while (Flag != 1 && Flag != 2)
+                {
+                    Console.WriteLine("Opcion invalida");
+                    Console.WriteLine("Desea ver el historial completo? \n 1. Si \n 2. No");
+                    Flag = int.Parse(Console.ReadLine());
+                }
+                if (Flag == 1)
+                {
+                    HistorialCompleto(Paciente);
+                }
             }
-            if(Flag == 1)
-            {
-                HistorialCompleto(Paciente);
-            }
+            Console.WriteLine("Presione una tecla para continuar");
             Console.ReadKey();
             }
         
@@ -122,7 +133,7 @@ namespace Historiales_Medicos
 
         static void RegistroNuevo(string Fecha,string Hora)
         {
-            Console.WriteLine(".-------SALUD PRIMERO------.\n..............Datos del Paciente.............\n");
+            Console.WriteLine(".-------SALUD PRIMERO------.\n..........Datos del Paciente..........\n");
             Historial Paciente = new Historial(Fecha,Hora);
             Console.WriteLine("Ingrese el nombre del paciente");
             Paciente.NombrePaciente = Console.ReadLine();
