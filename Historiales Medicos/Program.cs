@@ -170,6 +170,8 @@ namespace Historiales_Medicos
             Paciente.TipoSangre = Console.ReadLine();
             Console.WriteLine("Ingrese los padecimientos congenitos del paciente");
             Paciente.PadecimientoC = Console.ReadLine();
+            Console.WriteLine("Ingrese las cirugias previas que ha tenido el paciente");
+            Paciente.Cirugias = Console.ReadLine();
             Console.WriteLine("Ingrese las lesiones de gravedad recientes (2 años o menos): ");
             Paciente.LesionesR = Console.ReadLine();
             Console.WriteLine("Ingrese las alergias del paciente");
@@ -227,7 +229,7 @@ namespace Historiales_Medicos
             Console.WriteLine("Ingrese el año en que ingreso al hospital (Ejemplo: 1999): ");
             Doctor.AnioIngresion = Console.ReadLine();
             Doctor.IdMedico = GenerarIdMedico(Doctor);
-            
+            Console.WriteLine("Ingrese la contraseña que se guardara \n NOTA: Es muy importante que la contraseña sea de 6 digitos o mas");
             Doctor.Password = Console.ReadLine();
             while(Flag == false)
             {
