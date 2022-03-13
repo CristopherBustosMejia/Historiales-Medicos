@@ -23,14 +23,14 @@ namespace Historiales_Medicos
             {
                 Console.WriteLine("............................");
                 Console.WriteLine(".-------SALUD PRIMERO------.\n............................\n");
-                Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1. Registrar Medico \n 2. Consultar historial cliníco del paciente \n 3. Registrar nuevo paciente. \n 4. Salir");
+                Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1. Registrar Medico \n 2. Consultar historial cliníco del paciente \n 3. Registrar nuevo paciente. \n 4. Recargar lista de Medicos \n 5. Salir");
                 Console.WriteLine("++++++++++++++++++++++++++++++++");
                 option = Console.ReadLine();
-                while (option != "1" && option != "2" && option != "3" && option != "4")
+                while (option != "1" && option != "2" && option != "3" && option != "4" && option != "5")
                 {
                     Console.WriteLine("++++++++++++++++++++++++++++++++");
                     Console.WriteLine("Opcion no valida");
-                    Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1. Registrar Medico \n 2. Consultar historial cliníco del paciente \n 3. Registrar nuevo paciente. \n 4. Salir");
+                    Console.WriteLine("Por favor ingrese la opción que desea realizar \n 1. Registrar Medico \n 2. Consultar historial cliníco del paciente \n 3. Registrar nuevo paciente. \n 4. Recargar lista de Medicos \n 5. Salir");
                     Console.WriteLine("++++++++++++++++++++++++++++++++");
                     option = Console.ReadLine();
                 }
@@ -43,7 +43,7 @@ namespace Historiales_Medicos
                         break;
                     case "2":
                         {
-                            ConsultarRegistro();
+                            ConsultarRegistro(ListaMedicos);
                         }
                         break;
                     case "3":
@@ -52,6 +52,13 @@ namespace Historiales_Medicos
                         }
                         break;
                     case "4":
+                        {
+                            CargarMedicos(ListaMedicos);
+                            Console.WriteLine("La Lista se recargo \n Presione una tecla para continuar");
+                            Console.ReadKey();
+                        }
+                        break;
+                    case "5":
                         {
                             flag = false;
                         }
@@ -90,7 +97,7 @@ namespace Historiales_Medicos
                 return null;
             }
         }
-        static void ConsultarRegistro()
+        static void ConsultarRegistro(List<Medico>ListaMedicos)
         {
             Console.WriteLine(".-------SALUD PRIMERO------.\n..........Datos del Paciente..........\n");
             int Flag;
@@ -115,13 +122,12 @@ namespace Historiales_Medicos
                 }
                 if (Flag == 1)
                 {
-                    HistorialCompleto(Paciente);
+                    HistorialCompleto(Paciente,ListaMedicos);
                 }
             }
             Console.WriteLine("Presione una tecla para continuar");
             Console.ReadKey();
             }
-        
         private static string GetFecha()
         {
             return DateTime.Now.ToString("dd_MM_yy");
@@ -130,7 +136,6 @@ namespace Historiales_Medicos
         {
             return DateTime.Now.ToString("hh_mm");
         }
-
         static void RegistroNuevo(string Fecha,string Hora)
         {
             Console.WriteLine(".-------SALUD PRIMERO------.\n..........Datos del Paciente..........\n");
@@ -161,7 +166,7 @@ namespace Historiales_Medicos
                 Console.WriteLine("Ingrese el numero telefonico");
                 Paciente.NumeroTelefono = Console.ReadLine();
             }
-            Console.WriteLine("Ingrese el tipo de sangre del paciente (Ejemplo: O positivo)");
+            Console.WriteLine("Ingrese el tipo de sangre del paciente (Ejemplo: O+)");
             Paciente.TipoSangre = Console.ReadLine();
             Console.WriteLine("Ingrese los padecimientos congenitos del paciente");
             Paciente.PadecimientoC = Console.ReadLine();
@@ -171,6 +176,8 @@ namespace Historiales_Medicos
             Paciente.Alergias = Console.ReadLine();
             Console.WriteLine("Ingrese el diagnostico actual");
             Paciente.Diagnostico = Console.ReadLine();
+            Console.WriteLine("Ingrese la receta el paciente");
+            Paciente.Receta = Console.ReadLine();
             Console.WriteLine("Ingrese las indicaciones de tratamiento");
             Paciente.Indicaciones = Console.ReadLine();
             GuardarRegistro(Paciente);
@@ -248,6 +255,7 @@ namespace Historiales_Medicos
         }
         static void CargarMedicos(List<Medico>ListaMedicos)
         {
+            ListaMedicos.Clear();
             Medico Doctor = new Medico();
             FileStream Archivo =  new FileStream(@".\Medicos.txt", FileMode.Open, FileAccess.Read);
             StreamReader Leer = new StreamReader(Archivo);
@@ -260,9 +268,73 @@ namespace Historiales_Medicos
             Archivo.Close();
             Leer.Close();
         }
-        static void HistorialCompleto(Historial Paciente)
+        static void HistorialCompleto(Historial Paciente, List<Medico> ListaMedicos)
         {
-            Console.WriteLine("Trabajo en proceso");
+            string Cedula,Contraseña;
+            bool flag1 = false, flag2 = false;
+            int aux = 0, count = 3;
+            Console.WriteLine("Ingrese la cedula del Medico");
+            Cedula = Console.ReadLine();
+            for(int i = 0; i < ListaMedicos.Count; i++)
+            {
+                if (Cedula == ListaMedicos[i].Cedula)
+                {
+                    flag1 = true;
+                    aux = i;
+                }
+            }
+            if(flag1 == true)
+            {
+                for(int j = 0; j < count && flag2 == false; j++)
+                {
+                    Console.WriteLine("Ingrese la contraseña del medico: (Tiene:" + (count - j) + " intentos)");
+                    Contraseña = Console.ReadLine();
+                    if(Contraseña == ListaMedicos[aux].Password)
+                    {
+                        flag2 = true;
+                    }
+                }
+                if(flag2 == true)
+                {
+                    Console.Clear();
+                    Console.WriteLine(".-------SALUD PRIMERO------.\n..............Historial Completo............\n");
+                    Console.WriteLine("Nombre: " + Paciente.NombrePaciente);
+                    Console.WriteLine("Apellido Paterno: " + Paciente.ApellidoP);
+                    Console.WriteLine("Apellido Materno: " + Paciente.ApellidoM);
+                    Console.WriteLine("Edad: " + Paciente.Edad.ToString());
+                    Console.WriteLine("Fecha de Nacimiento: " + Paciente.FechaNacimiento);
+                    Console.WriteLine("Sexo: " + Paciente.Sexo);
+                    if (Paciente.NumeroTelefono != "")
+                    {
+                        Console.WriteLine("Numero de telefono: " + Paciente.NumeroTelefono);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Numero de telefono: No Ingreso un numero");
+                    }
+                    Console.WriteLine("Tipo de Sangre " + Paciente.TipoSangre);
+                    Console.WriteLine("Padecimientos congenitos: " + Paciente.PadecimientoC);
+                    Console.WriteLine("Lesiones recientes (2 años o menos) " + Paciente.LesionesR);
+                    Console.WriteLine("Cirugias previas: " + Paciente.Cirugias);
+                    Console.WriteLine("Alergias: " + Paciente.Alergias);
+                    Console.WriteLine("Diagnostico: " + Paciente.Diagnostico);
+                    Console.WriteLine("Receta: " + Paciente.Receta);
+                    Console.WriteLine("Indicaciones medicas: " + Paciente.Indicaciones);
+                    Console.WriteLine("Id de registro: " + Paciente.IdRegistro);
+                    Console.WriteLine("Fecha de registro (dd_mm_aa): " + Paciente.FechaRegistro);
+                    Console.WriteLine("Hora de registro: " + Paciente.HoraRegistro);
+                    Console.WriteLine("Fecha de la ultima mopdificacion: " + Paciente.UltimaModF);
+                    Console.WriteLine("Hora de la ultima modificacion: " + Paciente.UltimaModH);
+                }
+                else
+                {
+                    Console.WriteLine("La contraseña es incorrecta");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No se encontro ningun medico con esa cedula");
+            }
         }
     }
 }

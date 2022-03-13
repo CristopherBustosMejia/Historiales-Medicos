@@ -18,8 +18,11 @@ namespace Historiales_Medicos
         public string FechaNacimiento;
         public string FechaRegistro;
         public string HoraRegistro;
+        public string UltimaModF;
+        public string UltimaModH;
         public string TipoSangre;
         public string Diagnostico;
+        public string Receta;
         public string Indicaciones;
         public string PadecimientoC;
         public string LesionesR;
@@ -34,6 +37,8 @@ namespace Historiales_Medicos
         {
             this.FechaRegistro = FechaRegistro;
             this.HoraRegistro = HoraRegistro;
+            UltimaModF = FechaRegistro;
+            UltimaModH = HoraRegistro;
         }
     }
 }
