@@ -138,6 +138,9 @@ namespace Historiales_Medicos
         }
         static void RegistroNuevo(string Fecha,string Hora)
         {
+            Stream stream = Console.OpenStandardInput();
+            byte[] data = new byte[500];
+
             Console.WriteLine(".-------SALUD PRIMERO------.\n..........Datos del Paciente..........\n");
             Historial Paciente = new Historial(Fecha,Hora);
             Console.WriteLine("Ingrese el nombre del paciente");
@@ -181,7 +184,9 @@ namespace Historiales_Medicos
             Console.WriteLine("Ingrese la receta el paciente");
             Paciente.Receta = Console.ReadLine();
             Console.WriteLine("Ingrese las indicaciones de tratamiento");
-            Paciente.Indicaciones = Console.ReadLine();
+            int outputTamano = stream.Read(data, 0, 500);
+            char[] chars = Encoding.UTF7.GetChars(data, 0, outputTamano);
+            Paciente.Indicaciones = new string(chars);
             GuardarRegistro(Paciente);
             Console.WriteLine("Registro creado y guardado con exito con la id: \n" + Paciente.IdRegistro + "\n Presione una tecla para continuar");
             Console.ReadKey();
